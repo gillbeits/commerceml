@@ -10,6 +10,7 @@ namespace CommerceMLParser\Tests;
 
 use CommerceMLParser\BulkEvent;
 use CommerceMLParser\Event\CategoryEvent;
+use CommerceMLParser\Event\ProductEvent;
 use CommerceMLParser\Parser;
 
 class ParserTest extends \PHPUnit_Framework_TestCase {
@@ -46,6 +47,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         $this->expectOutputString('2');
         self::$Parser->addListener('CategoryEvent', function (CategoryEvent $categoryEvent) {
             print count($categoryEvent->getCategory()->fetch());
+        });
+        self::$Parser->parse(__DIR__ . '/import.xml');
+    }
+
+    /**
+     * @test
+     */
+    public function productEventTest()
+    {
+        self::$Parser->addListener('ProductEvent', function (ProductEvent $productEvent) {
+            var_dump($productEvent->getProduct());
         });
         self::$Parser->parse(__DIR__ . '/import.xml');
     }
