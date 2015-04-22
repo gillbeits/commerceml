@@ -10,23 +10,23 @@ namespace CommerceMLParser\Event;
 
 
 use CommerceMLParser\Event;
-use CommerceMLParser\Model\Product;
+use CommerceMLParser\Model\Offer;
 
-class ProductEvent extends Event {
-    protected $product;
+class OfferEvent extends Event {
+    protected $offer;
 
-    function __construct(Product $product)
+    function __construct(Offer $offer)
     {
-        $this->product = $product;
+        $this->offer = $offer;
         call_user_func_array('parent::__construct', func_get_args());
     }
 
     /**
-     * @return Product
+     * @return Offer
      */
-    public function getProduct()
+    public function getOffer()
     {
-        return $this->product;
+        return $this->offer;
     }
 
 
