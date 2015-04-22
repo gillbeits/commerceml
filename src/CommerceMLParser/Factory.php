@@ -30,8 +30,17 @@ class Factory {
             'event'         => '\CommerceMLParser\Event\PropertyEvent',
         ],
         'КоммерческаяИнформация/Каталог/Товары/Товар' => [
-            'model'         => '\Zenwalker\CommerceML\Model\Product',
+            'model'         => '\CommerceMLParser\Model\Product',
             'event'         => '\CommerceMLParser\Event\ProductEvent',
+        ],
+
+        'КоммерческаяИнформация/ПакетПредложений/ТипыЦен/ТипЦены' => [
+            'model'         => '\Zenwalker\CommerceML\Model\PriceType',
+            'event'         => '\CommerceMLParser\Event\PriceTypeEvent',
+        ],
+        'КоммерческаяИнформация/ПакетПредложений/Предложения/Предложение' => [
+            'model'         => '\CommerceMLParser\Model\Offer',
+            'event'         => '\CommerceMLParser\Event\OfferEvent',
         ]
     ];
 
