@@ -11,6 +11,9 @@ namespace CommerceMLParser\Tests;
 use CommerceMLParser\BulkEvent;
 use CommerceMLParser\Event\CategoryEvent;
 use CommerceMLParser\Event\ProductEvent;
+use CommerceMLParser\Event\PropertyEvent;
+use CommerceMLParser\Event\PriceTypeEvent;
+use CommerceMLParser\Event\OfferEvent;
 use CommerceMLParser\Parser;
 
 class ParserTest extends \PHPUnit_Framework_TestCase {
@@ -33,16 +36,24 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test Parser::parse()
      */
-    public function parseTest()
+    public function parseImportXmlTest()
     {
         self::$Parser->parse(__DIR__ . '/import.xml');
     }
 
     /**
-     * @test
-     * @depends parseTest
+     * @test Parser::parse()
      */
-    public function eventTest()
+    public function parseOffersXmlTest()
+    {
+        self::$Parser->parse(__DIR__ . '/offers.xml');
+    }
+
+    /**
+     * @test
+     * @depends parseImportXmlTest
+     */
+    public function categoryEventTest()
     {
         $this->expectOutputString('2');
         self::$Parser->addListener('CategoryEvent', function (CategoryEvent $categoryEvent) {
@@ -53,18 +64,94 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
+     * @depends parseImportXmlTest
      */
     public function productEventTest()
     {
-        self::$Parser->addListener('ProductEvent', function (ProductEvent $productEvent) {
-            var_dump($productEvent->getProduct());
+        $counter = 0;
+        self::$Parser->addListener('ProductEvent', function (ProductEvent $productEvent) use (&$counter) {
+            $counter++;
         });
         self::$Parser->parse(__DIR__ . '/import.xml');
+
+        $this->assertEquals(6, $counter);
     }
 
     /**
      * @test
-     * @depends parseTest
+     * @depends parseImportXmlTest
+     */
+    public function propertyEventTest()
+    {
+        $counter = 0;
+        self::$Parser->addListener('PropertyEvent', function (PropertyEvent $propertyEvent) use (&$counter) {
+            $counter++;
+        });
+        self::$Parser->parse(__DIR__ . '/import.xml');
+
+        $this->assertEquals(5, $counter);
+    }
+
+    /**
+     * @test
+     * @depends parseOffersXmlTest
+     */
+    public function priceTypeEventTest()
+    {
+        $counter = 0;
+        self::$Parser->addListener('PriceTypeEvent', function (PriceTypeEvent $priceTypeEvent) use (&$counter) {
+            $counter++;
+        });
+        self::$Parser->parse(__DIR__ . '/offers.xml');
+
+        $this->assertEquals(2, $counter);
+    }
+
+    /**
+     * @test
+     * @depends parseOffersXmlTest
+     */
+    public function offerEventTest()
+    {
+        $counter = 0;
+        self::$Parser->addListener('OfferEvent', function (OfferEvent $offerEvent) use (&$counter) {
+            $counter++;
+        });
+        self::$Parser->parse(__DIR__ . '/offers.xml');
+
+        $this->assertEquals(6, $counter);
+    }
+
+    /**
+     * @test
+     */
+    public function parseObjectTest()
+    {
+        // import.xml objects
+        self::$Parser->addListener('ProductEvent', function (ProductEvent $productEvent) {
+            //var_dump($productEvent->getProduct());
+        });
+        self::$Parser->addListener('CategoryEvent', function (CategoryEvent $categoryEvent) {
+            //var_dump($categoryEvent->getCategory()->fetch());
+        });
+        self::$Parser->addListener('PropertyEvent', function (PropertyEvent $propertyEvent) {
+            //var_dump($propertyEvent->getProperty());
+        });
+        self::$Parser->parse(__DIR__ . '/import.xml');
+
+        // offers.xml objects
+        self::$Parser->addListener('PriceTypeEvent', function (PriceTypeEvent $priceTypeEvent) {
+            //var_dump($priceTypeEvent->getPriceType());
+        });
+        self::$Parser->addListener('OfferEvent', function (OfferEvent $offerEvent) {
+            //var_dump($offerEvent->getOffer());
+        });
+        self::$Parser->parse(__DIR__ . '/offers.xml');
+    }
+
+    /**
+     * @test
+     * @depends parseImportXmlTest
      */
     public function bulkUploadTest()
     {
