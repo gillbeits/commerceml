@@ -26,7 +26,7 @@ class Factory {
             'child'         => 'Группы/Группа'
         ],
         'КоммерческаяИнформация/Классификатор/Свойства/СвойствоНоменклатуры' => [
-            'model'         => '\Zenwalker\CommerceML\Model\Property',
+            'model'         => '\CommerceMLParser\Model\Property',
             'event'         => '\CommerceMLParser\Event\PropertyEvent',
         ],
         'КоммерческаяИнформация/Каталог/Товары/Товар' => [
