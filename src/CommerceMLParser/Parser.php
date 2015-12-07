@@ -75,6 +75,7 @@ class Parser extends EventDispatcher {
     /**
      * @param string $path
      * @param callable|callback $callable
+     * @return $this
      */
     public function registerPath($path, $callable)
     {

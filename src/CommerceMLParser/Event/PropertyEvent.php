@@ -10,7 +10,7 @@ namespace CommerceMLParser\Event;
 
 
 use CommerceMLParser\Event;
-use Zenwalker\CommerceML\Model\Property;
+use CommerceMLParser\Model\Property;
 
 class PropertyEvent extends Event {
 

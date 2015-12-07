@@ -10,7 +10,7 @@ namespace CommerceMLParser\Event;
 
 
 use CommerceMLParser\Event;
-use Zenwalker\CommerceML\Model\PriceType;
+use CommerceMLParser\Model\PriceType;
 
 class PriceTypeEvent extends Event {
 

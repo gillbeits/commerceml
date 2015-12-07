@@ -8,12 +8,15 @@
         {
             "name": "Ivan Koretskiy",
             "email": "gillbeits@gmail.com"
+        },
+        {
+            "name": "Alexandr Tkach",
+            "email": "xtkach@gmail.com"
         }
     ],
     "require": {
         "php": ">=5.3.2",
-        "zenwalker/commerceml": "dev-master",
-        "symfony/event-dispatcher": "~2.1"
+        "symfony/event-dispatcher": ">=2.1"
     },
     "minimum-stability": "dev",
     "autoload": {

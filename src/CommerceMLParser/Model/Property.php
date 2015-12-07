@@ -1,9 +1,27 @@
-<?php namespace CommerceMLParser\Model;
+<?php
 
-use Zenwalker\CommerceML\Model\Property as PropertyParent;
+namespace CommerceMLParser\Model;
 
-class Property extends PropertyParent
+
+use CommerceMLParser\ORM\Model;
+
+class Property extends Model
 {
+    /**
+     * @var string $id
+     */
+    public $id;
+
+    /**
+     * @var string $name
+     */
+    public $name;
+
+    /**
+     * @var array $values
+     */
+    public $values = array();
+
     /**
      * @var string $description
      */
@@ -25,24 +43,58 @@ class Property extends PropertyParent
     public $type;
 
     /**
-     * @var bool $isUsed;
+     * @var bool $isUsed ;
      */
     public $isUsed;
 
     /**
-     * @param SimpleXMLElement $xml
+     * @param \SimpleXMLElement|null $importXml
+     * @return \CommerceMLParser\Model\Property
+     */
+    public function __construct($importXml = null)
+    {
+        if (!is_null($importXml)) {
+            $this->loadImport($importXml);
+        }
+    }
+
+    /**
+     * @param \SimpleXMLElement $xml
      * @return void
      */
     public function loadImport($xml)
     {
-        parent::loadImport($xml);
+        $this->id = (string)$xml->Ид;
 
-        $this->description = (string) $xml->Описание;
-        $this->isRequired = (string) $xml->Обязательное === 'true';
-        $this->isList = (string) $xml->Множественное === 'true';
-        $this->type = (string) $xml->ТипЗначений;
-        $this->isUsed = (string) $xml->ИспользованиеСвойства === 'true';
+        $this->name = (string)$xml->Наименование;
+
+        $valueType = (string)$xml->ТипЗначений;
+
+        if ($valueType == 'Справочник' && $xml->ВариантыЗначений) {
+            foreach ($xml->ВариантыЗначений->Справочник as $value) {
+                $id = (string)$value->ИдЗначения;
+                $this->values[$id] = (string)$value->Значение;
+            }
+        }
+
+        $this->description = (string)$xml->Описание;
+        $this->isRequired = (string)$xml->Обязательное === 'true';
+        $this->isList = (string)$xml->Множественное === 'true';
+        $this->type = (string)$xml->ТипЗначений;
+        $this->isUsed = (string)$xml->ИспользованиеСвойства === 'true';
     }
 
+    /**
+     * @param string $valueId
+     * @return null|string
+     */
+    public function getValue($valueId)
+    {
+        if (isset($this->values[$valueId])) {
+            return $this->values[$valueId];
+        }
+
+        return null;
+    }
 
 }

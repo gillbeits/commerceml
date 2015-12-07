@@ -11,8 +11,8 @@ namespace CommerceMLParser;
 
 use CommerceMLParser\Exception\NoObjectException;
 use CommerceMLParser\Exception\NoPathException;
-use Zenwalker\CommerceML\ORM\Collection;
-use Zenwalker\CommerceML\ORM\Model;
+use CommerceMLParser\ORM\Collection;
+use CommerceMLParser\ORM\Model;
 
 class Factory {
     /**
@@ -20,9 +20,9 @@ class Factory {
      */
     protected static $objects = [
         'КоммерческаяИнформация/Классификатор/Группы/Группа' => [
-            'model'         => '\Zenwalker\CommerceML\Model\Category',
+            'model'         => '\CommerceMLParser\Model\Category',
             'event'         => '\CommerceMLParser\Event\CategoryEvent',
-            'collection'    => '\Zenwalker\CommerceML\Model\CategoryCollection',
+            'collection'    => '\CommerceMLParser\Model\CategoryCollection',
             'child'         => 'Группы/Группа'
         ],
         'КоммерческаяИнформация/Классификатор/Свойства/СвойствоНоменклатуры' => [
@@ -35,7 +35,7 @@ class Factory {
         ],
 
         'КоммерческаяИнформация/ПакетПредложений/ТипыЦен/ТипЦены' => [
-            'model'         => '\Zenwalker\CommerceML\Model\PriceType',
+            'model'         => '\CommerceMLParser\Model\PriceType',
             'event'         => '\CommerceMLParser\Event\PriceTypeEvent',
         ],
         'КоммерческаяИнформация/ПакетПредложений/Предложения/Предложение' => [
@@ -49,6 +49,7 @@ class Factory {
      * @param \SimpleXMLElement $xml
      * @return array
      * @throws NoObjectException
+     * @throws NoPathException
      */
     public function createObject($path, $xml)
     {

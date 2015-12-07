@@ -10,7 +10,7 @@ namespace CommerceMLParser\Event;
 
 
 use CommerceMLParser\Event;
-use Zenwalker\CommerceML\Model\CategoryCollection;
+use CommerceMLParser\Model\CategoryCollection;
 
 class CategoryEvent extends Event {
 

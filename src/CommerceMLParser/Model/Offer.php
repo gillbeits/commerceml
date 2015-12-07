@@ -1,6 +1,8 @@
-<?php namespace CommerceMLParser\Model;
+<?php
 
-use Zenwalker\CommerceML\ORM\Model;
+namespace CommerceMLParser\Model;
+
+use CommerceMLParser\ORM\Model;
 
 
 class Offer extends Model
