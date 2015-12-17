@@ -47,8 +47,10 @@ class Product extends Model implements IdModel
      * Class constructor.
      * @param \SimpleXMLElement $xml
      */
-    public function __construct(\SimpleXMLElement $xml)
+    public function __construct(\SimpleXMLElement $xml = null)
     {
+        if (null === $xml) return;
+
         $this->categories = new Collection();
         $this->requisites = new Collection();
         $this->properties = new Collection();
