@@ -12,6 +12,7 @@ use CommerceMLParser\Model\Types\RequisiteValue;
 use CommerceMLParser\Model\Types\TaxRate;
 use CommerceMLParser\ORM\Collection;
 use CommerceMLParser\ORM\Model;
+use CommerceMLParser\Parser;
 
 class Product extends Model implements IdModel
 {
@@ -80,8 +81,11 @@ class Product extends Model implements IdModel
         }
 
         if ($xml->Картинка) {
+            $dirName = dirname(Parser::getInstance()->getCurrentFile()->getRealPath());
             foreach ($xml->Картинка as $image) {
-                $this->images->add((string)$image);
+                if (file_exists($path = realpath($dirName . DIRECTORY_SEPARATOR . (string)$image))) {
+                    $this->images->add($path);
+                }
             }
         }
 
