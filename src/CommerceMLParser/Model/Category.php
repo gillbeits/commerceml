@@ -2,6 +2,7 @@
 
 namespace CommerceMLParser\Model;
 
+use CommerceMLParser\Model\Interfaces\IdModel;
 use CommerceMLParser\ORM\Collection;
 use CommerceMLParser\ORM\Model;
 
@@ -9,47 +10,50 @@ use CommerceMLParser\ORM\Model;
  * Class Category
  * @package CommerceMLParser\Model
  */
-class Category extends Model
+class Category extends Model implements IdModel
 {
-    /**
-     * @var string $id
-     */
-    public $id;
-
-    /**
-     * @var string $name
-     */
-    public $name;
-
-    /**
-     * @var string $parent
-     */
-    public $parent;
+    /** @var string $id */
+    protected $id;
+    /** @var string $name */
+    protected $name;
+    /** @var string $parent */
+    protected $parent;
 
     /**
      * Create instance from file.
      *
-     * @param null $importXml
-     * @return Category
+     * @param \SimpleXMLElement $xml
      */
-    public function __construct($importXml = null)
+    public function __construct(\SimpleXMLElement $xml = null)
     {
-        if (! is_null($importXml)) {
-            $this->loadImport($importXml);
-        }
+        if (null === $xml) return;
+        $this->id = (string) $xml->Ид;
+        $this->name = (string) $xml->Наименование;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
-     * Load category data from import.xml.
-     *
-     * @param \SimpleXMLElement $xml
-     * @return void
+     * @return string
      */
-    public function loadImport($xml)
+    public function getName()
     {
-        $this->id = (string) $xml->Ид;
+        return $this->name;
+    }
 
-        $this->name = (string) $xml->Наименование;
+    /**
+     * @return string
+     */
+    public function getParent()
+    {
+        return $this->parent;
     }
 
     /**

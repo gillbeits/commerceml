@@ -3,7 +3,9 @@
 namespace CommerceMLParser\ORM;
 
 
-class Collection
+use CommerceMLParser\Model\Interfaces\IdModel;
+
+class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * @var array $items
@@ -18,26 +20,90 @@ class Collection
      */
     public function __construct($items = array())
     {
-        $this->items = $items;
+        $this->add($items);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->items);
+    }
+
+    /**
+     * @param $callback
+     * @return $this
+     */
+    public function usort($callback) {
+        @usort($this->items, $callback);
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function first()
+    {
+        return reset($this->items);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function last()
+    {
+        return end($this->items);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function current()
+    {
+        return current($this->items);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function next()
+    {
+        return next($this->items);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function key()
+    {
+        return key($this->items);
+    }
+
+    /**
+     * @return self
+     */
+    public function filter(\Closure $p)
+    {
+        return new static(array_filter($this->items, $p));
     }
 
     /**
      * Add item to collection.
      *
      * @param array|object $item
-     * @param string $key
      * @return Collection
      */
-    public function add($item, $key = 'id')
+    public function add($item)
     {
-        if (is_array($item)) {
+        if (is_array($item) || $item instanceof \Traversable) {
             foreach ($item as $i) {
-                $this->add($i, $key);
+                $this->add($i);
             }
         }
         else {
-            if (property_exists($item, $key)) {
-                $this->items[$item->{$key}] = $item;
+            if ($item instanceof IdModel) {
+                $this->items[$item->getId()] = $item;
             } else {
                 $this->items[] = $item;
             }
@@ -47,87 +113,53 @@ class Collection
     }
 
     /**
-     * Filter collection.
-     *
-     * @param string $key
-     * @param mixed $val
-     * @return Collection
+     * @param object $item
+     * @return bool|array
      */
-    public function filter($key, $condition, $val)
-    {
-        $result = array();
-        foreach($this->items as $i => $item) {
-            $filterMethod = 'filter'.ucfirst($key);
-
-            if (method_exists($item, $filterMethod)) {
-                $val = $item->{$filterMethod}($condition, $val);
-            }
-
-            if (isset($item->{$key})) {
-
-                if ($condition == '=' || $condition == '==') {
-                    if ($item->{$key} == $val) {
-                        $result[$i] = $item;
-                    }
-                }
-
-                else if ($condition == '>') {
-                    if ($item->{$key} > $val) {
-                        $result[$i] = $item;
-                    }
-                }
-
-                else if ($condition == '>=') {
-                    if ($item->{$key} >= $val) {
-                        $result[$i] = $item;
-                    }
-                }
-
-                else if ($condition == '<') {
-                    if ($item->{$key} < $val) {
-                        $result[$i] = $item;
-                    }
-                }
-
-                else if ($condition == '<=') {
-                    if ($item->{$key} <= $val) {
-                        $result[$i] = $item;
-                    }
-                }
-
-                else if ($condition == '!=') {
-                    if ($item->{$key} != $val) {
-                        $result[$i] = $item;
-                    }
-                }
-
-            }
-        }
-
-        $called = get_called_class();
-        return new $called($result);
+    public function has($item){
+        return array_search($item, $this->items);
     }
 
     /**
-     * Remove item form collection.
-     *
-     * @param string $index
-     * @param string $key
-     * @return bool
+     * @param object[]|object $items
+     * @return $this
      */
-    public function remove($index, $key = 'id')
-    {
-        if ($key == 'id') {
-            if (isset($this->items[$index])) {
-                unset($this->items[$index]);
+    public function replace($items){
+        if (is_array($items) || $items instanceof \Traversable) {
+            foreach ($items as $item) {
+                $this->replace($item);
             }
-        }
-        else {
-            foreach ($this->filter($key, '=', $index)->fetch() as $i => $filtered) {
-                unset($this->items[$i]);
-            }
+            return $this;
         }
 
+        $item = $items;
+
+        if (($position = $this->has($item)) !== false) {
+            $this->offsetSet($position, $item);
+        } else {
+            $this->add($item);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param object[]|object $items
+     * @return $this
+     */
+    public function remove($items){
+        if (is_array($items) || $items instanceof \Traversable) {
+            foreach ($items as $item) {
+                $this->remove($item);
+            }
+            return $this;
+        }
+
+        $item = $items;
+
+        if (($positions = $this->has($item)) !== false) {
+            array_splice($this->items, $position, 1);
+        }
         return $this;
     }
 
@@ -142,58 +174,77 @@ class Collection
     }
 
     /**
-     * Get first element from collection.
-     *
-     * @return object
+     * Check collection for empty.
      */
-    public function first()
+    public function isEmpty()
     {
-        if (! empty($this->items))
-        {
-            $firstKey = key($this->items);
-            return $this->items[$firstKey];
-        }
-
-        return false;
+        return empty($this->items);
     }
 
     /**
-     * Attach collection to collection.
-     *
-     * @param Collection $collection
-     * @return void
+     * {@inheritDoc}
      */
-    public function attach($collection)
+    public function offsetExists($offset)
     {
-        $attachMethod = 'attach'.array_pop(explode('\\', get_class($collection)));
-
-        if (method_exists($this, $attachMethod)) {
-            $this->{$attachMethod}($collection);
-        }
-
-        $this->{$attachMethod}($collection);
+        return isset($this->items[$offset]) || array_key_exists($offset, $this->items);
     }
 
     /**
-     * Get item by id.
-     *
-     * @param string $id
-     * @return Model
+     * {@inheritDoc}
      */
-    public function get($id)
+    public function offsetGet($offset)
     {
-        if (isset($this->items[$id])) {
-            return $this->items[$id];
+        if (isset($this->items[$offset])) {
+            return $this->items[$offset];
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        if (! isset($offset)) {
+            return $this->add($value);
+        }
+        return $this->items[$offset] = $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetUnset($offset)
+    {
+        if (isset($this->items[$offset]) || array_key_exists($offset, $this->items)) {
+            $removed = $this->items[$offset];
+            unset($this->items[$offset]);
+
+            return $removed;
         }
 
         return null;
     }
 
     /**
-     * Check collection for empty.
+     * {@inheritDoc}
      */
-    public function isEmpty()
+    public function count()
     {
-        return empty($this->items);
+        return count($this->items);
+    }
+
+    /**
+     * Получить элемент по индексу
+     *
+     * @param $offset
+     * @return mixed
+     */
+    public function get($offset)
+    {
+        if (isset($this->items[$offset])) {
+            return $this->items[$offset];
+        }
+        return null;
     }
 }

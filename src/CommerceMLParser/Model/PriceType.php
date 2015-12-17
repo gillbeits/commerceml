@@ -2,46 +2,54 @@
 
 namespace CommerceMLParser\Model;
 
+use CommerceMLParser\Model\Interfaces\IdModel;
 use CommerceMLParser\ORM\Model;
 
-class PriceType extends Model
+class PriceType extends Model implements IdModel
 {
-    /**
-     * @var string
-     */
-    public $id;
+    /** @var string */
+    protected $id;
+    /** @var string */
+    protected $type;
+    /** @var string */
+    protected $currency;
 
     /**
-     * @var string
-     */
-    public $type;
-
-    /**
-     * @var string
-     */
-    public $currency;
-
-    /**
-     * @param \SimpleXMLElement $xmlPriceType
+     * @param \SimpleXMLElement $xml
      * @return PriceType
      */
-    public function __construct($xmlPriceType = null)
+    public function __construct(\SimpleXMLElement $xml = null)
     {
-        if (! is_null($xmlPriceType)) {
-            $this->loadImport($xmlPriceType);
+        if (!is_null($xml)) {
+            $this->id = (string) $xml->Ид;
+            $this->type = (string) $xml->Наименование;
+            $this->currency = (string) $xml->Валюта;
         }
     }
 
     /**
-     * @param \SimpleXMLElement $xmlPriceType
-     * @return void
+     * @return string
      */
-    private function loadImport($xmlPriceType)
+    public function getId()
     {
-        $this->id = (string) $xmlPriceType->Ид;
-
-        $this->type = (string) $xmlPriceType->Наименование;
-
-        $this->currency = (string) $xmlPriceType->Валюта;
+        return $this->id;
     }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+
 }

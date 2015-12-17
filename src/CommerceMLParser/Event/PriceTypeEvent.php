@@ -23,7 +23,7 @@ class PriceTypeEvent extends Event {
     }
 
     /**
-     * @return mixed
+     * @return PriceType
      */
     public function getPriceType()
     {

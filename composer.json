@@ -3,15 +3,11 @@
     "type": "library",
     "description": "Library for CommerceML 2.0 parser",
     "keywords": ["parser", "commerceml", "xml"],
-    "license": "Apache2",
+    "license": "MIT",
     "authors": [
         {
             "name": "Ivan Koretskiy",
             "email": "gillbeits@gmail.com"
-        },
-        {
-            "name": "Alexandr Tkach",
-            "email": "xtkach@gmail.com"
         }
     ],
     "require": {
@@ -25,6 +21,6 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.8@dev"
+        "codeception/codeception": "dev-master"
     }
 }

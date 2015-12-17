@@ -1,0 +1,12 @@
+# Codeception Test Suite Configuration
+#
+# Suite for unit (internal) tests.
+
+class_name: UnitTester
+coverage:
+    enabled: true
+modules:
+    enabled:
+        - Asserts
+        - \Helper\Unit
+error_level: "E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE"
