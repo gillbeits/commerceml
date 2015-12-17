@@ -8,6 +8,6 @@ php:
 install:
     - composer self-update
     - composer install
-    - export PATH="$HOME/vendor/bin:$PATH"
+    - export PATH="$HOME/gillbeits/commerceml/vendor/bin:$PATH"
 script:
     - codecept run unit
