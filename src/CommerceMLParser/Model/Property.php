@@ -9,21 +9,21 @@ use CommerceMLParser\ORM\Model;
 class Property extends Model implements IdModel
 {
     /** @var string */
-    public $id;
+    protected $id;
     /** @var string */
-    public $name;
+    protected $name;
     /** @var array */
-    public $values = array();
+    protected $values = array();
     /** @var string */
-    public $description;
+    protected $description;
     /** @var bool */
-    public $isRequired;
+    protected $isRequired;
     /** @var bool */
-    public $isList;
+    protected $isList;
     /** @var string */
-    public $type;
+    protected $type;
     /** @var bool ; */
-    public $isUsed;
+    protected $isUsed;
 
     /**
      * Property constructor.

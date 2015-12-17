@@ -28,7 +28,7 @@ class Product extends Model implements IdModel
     /** @var Collection|PropertyValue[]  */
     protected $properties;
     /** @var string */
-    protected $code;
+    protected $sku;
     /** @var string */
     protected $barcode;
     /** @var Collection|ProductCharacteristic[]  */
@@ -58,7 +58,7 @@ class Product extends Model implements IdModel
         $this->id = (string)$xml->Ид;
         $this->name = (string)$xml->Наименование;
         $this->description = (string)$xml->Описание;
-        $this->code = (string)$xml->Артикул;
+        $this->sku = (string)$xml->Артикул;
         $this->barcode = (string)$xml->ШтрихКод;
 
         if ($xml->Группы) {
@@ -157,9 +157,9 @@ class Product extends Model implements IdModel
     /**
      * @return string
      */
-    public function getCode()
+    public function getSku()
     {
-        return $this->code;
+        return $this->sku;
     }
 
     /**
