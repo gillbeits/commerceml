@@ -12,7 +12,7 @@ class ImportParserTest extends \Codeception\TestCase\Test
 
     protected function _before()
     {
-        $this->parser = new \CommerceMLParser\Parser();
+        $this->parser = \CommerceMLParser\Parser::getInstance();
     }
 
     protected function _after()
