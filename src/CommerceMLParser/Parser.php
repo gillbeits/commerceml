@@ -51,8 +51,9 @@ class Parser extends EventDispatcher {
         if (!static::$instance) {
             static::$instance = (new \ReflectionClass(get_called_class()))
                 ->newInstanceWithoutConstructor();
+            call_user_func_array([static::$instance, "create"], func_get_args());
         }
-        call_user_func_array([static::$instance, "create"], func_get_args());
+
         return static::$instance;
     }
 
@@ -100,10 +101,10 @@ class Parser extends EventDispatcher {
     {
         if (null == $factory) {
             $factory = new Factory();
+            $this->factory = $factory;
         }
 
         $this->xmlReader = new \XMLReader();
-        $this->factory = $factory;
 
         $this->registerPath('КоммерческаяИнформация/Классификатор/Группы/Группа', $this->dispatchObjectCallable());
         $this->registerPath('КоммерческаяИнформация/Классификатор/Свойства/СвойствоНоменклатуры', $this->dispatchObjectCallable());
