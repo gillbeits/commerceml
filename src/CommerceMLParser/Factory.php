@@ -19,14 +19,14 @@ class Factory {
     /**
      * @var array
      */
-    protected static $objects = [
+    public static $objects = [
         'КоммерческаяИнформация/Классификатор/Группы/Группа' => [
             'model'         => '\CommerceMLParser\Model\Category',
             'event'         => '\CommerceMLParser\Event\CategoryEvent',
             'collection'    => '\CommerceMLParser\Model\CategoryCollection',
             'child'         => 'commerceml:Группы/commerceml:Группа'
         ],
-        'КоммерческаяИнформация/Классификатор/Свойства/СвойствоНоменклатуры' => [
+        'КоммерческаяИнформация/Классификатор/Свойства/Свойство' => [
             'model'         => '\CommerceMLParser\Model\Property',
             'event'         => '\CommerceMLParser\Event\PropertyEvent',
         ],

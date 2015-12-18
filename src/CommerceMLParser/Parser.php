@@ -51,13 +51,10 @@ class Parser extends EventDispatcher {
         }
 
         $this->xmlReader = new \XMLReader();
-
-        $this->registerPath('КоммерческаяИнформация/Классификатор/Группы/Группа', $this->dispatchObjectCallable());
-        $this->registerPath('КоммерческаяИнформация/Классификатор/Свойства/СвойствоНоменклатуры', $this->dispatchObjectCallable());
-        $this->registerPath('КоммерческаяИнформация/Каталог/Товары/Товар', $this->dispatchObjectCallable());
-
-        $this->registerPath('КоммерческаяИнформация/ПакетПредложений/ТипыЦен/ТипЦены', $this->dispatchObjectCallable());
-        $this->registerPath('КоммерческаяИнформация/ПакетПредложений/Предложения/Предложение', $this->dispatchObjectCallable());
+        // Default parse rules
+        foreach (Factory::$objects as $path => $object) {
+            $this->registerPath($path, $this->dispatchObjectCallable());
+        }
     }
 
     /**
