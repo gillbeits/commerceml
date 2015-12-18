@@ -11,6 +11,7 @@ namespace CommerceMLParser;
 
 use CommerceMLParser\Exception\NoObjectException;
 use CommerceMLParser\Exception\NoPathException;
+use CommerceMLParser\Model\Interfaces\HasChild;
 use CommerceMLParser\ORM\Collection;
 use CommerceMLParser\ORM\Model;
 
@@ -23,7 +24,7 @@ class Factory {
             'model'         => '\CommerceMLParser\Model\Category',
             'event'         => '\CommerceMLParser\Event\CategoryEvent',
             'collection'    => '\CommerceMLParser\Model\CategoryCollection',
-            'child'         => 'Группы/Группа'
+            'child'         => 'commerceml:Группы/commerceml:Группа'
         ],
         'КоммерческаяИнформация/Классификатор/Свойства/СвойствоНоменклатуры' => [
             'model'         => '\CommerceMLParser\Model\Property',
@@ -61,32 +62,34 @@ class Factory {
         }
         $object = new self::$objects[$path]['model']($xml);
 
-        if (!empty(self::$objects[$path]['collection'])) {
+        if (!empty(self::$objects[$path]['child']) && $object instanceof HasChild && !empty(self::$objects[$path]['collection']) && class_exists(self::$objects[$path]['collection'])) {
             /** @var Collection $collection */
             $collection = new self::$objects[$path]['collection']();
             $collection->add($object);
-            $this->addChild($object, $collection, $path, $xml);
+            $this->addChild($object, $path, $xml);
         }
 
         return [isset($collection) ? $collection : $object, self::$objects[$path]];
     }
 
     /**
-     * @param Model $object
-     * @param Collection $collection
+     * @param HasChild $object
      * @param string $path
      * @param \SimpleXMLElement $xml
      * @throws NoObjectException
      */
-    protected function addChild($object, $collection, $path, $xml)
+    protected function addChild(HasChild $object, $path, $xml)
     {
-        if (!empty(self::$objects[$path]['child']) && method_exists($object, 'addChild')) {
-            foreach ($xml->xpath(self::$objects[$path]['child']) as $childxml) {
-                $child = new self::$objects[$path]['model']($childxml);
-                $object->addChild($child);
-                $collection->add($child);
-                $this->addChild($child, $collection, $path, $childxml);
+        foreach ($xml->getDocNamespaces() as $strPrefix => $strNamespace) {
+            if (strlen($strPrefix) == 0) {
+                $strPrefix = "commerceml";
             }
+            $xml->registerXPathNamespace($strPrefix, $strNamespace);
+        }
+        foreach ($xml->xpath(self::$objects[$path]['child']) as $childxml) {
+            $child = new self::$objects[$path]['model']($childxml);
+            $object->addChild($child);
+            $this->addChild($child, $path, $childxml);
         }
     }
 }

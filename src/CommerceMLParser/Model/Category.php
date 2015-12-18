@@ -2,6 +2,7 @@
 
 namespace CommerceMLParser\Model;
 
+use CommerceMLParser\Model\Interfaces\HasChild;
 use CommerceMLParser\Model\Interfaces\IdModel;
 use CommerceMLParser\ORM\Collection;
 use CommerceMLParser\ORM\Model;
@@ -10,7 +11,7 @@ use CommerceMLParser\ORM\Model;
  * Class Category
  * @package CommerceMLParser\Model
  */
-class Category extends Model implements IdModel
+class Category extends Model implements IdModel, HasChild
 {
     /** @var string $id */
     protected $id;
@@ -18,6 +19,8 @@ class Category extends Model implements IdModel
     protected $name;
     /** @var string $parent */
     protected $parent;
+    /** @var CategoryCollection  */
+    protected $categories;
 
     /**
      * Create instance from file.
@@ -29,8 +32,8 @@ class Category extends Model implements IdModel
         if (null === $xml) return;
         $this->id = (string) $xml->Ид;
         $this->name = (string) $xml->Наименование;
+        $this->categories = new CategoryCollection();
     }
-
 
     /**
      * @return string
@@ -65,21 +68,11 @@ class Category extends Model implements IdModel
     public function addChild($category)
     {
         $category->parent = $this->id;
+        $this->categories->add($category);
     }
 
-    /**
-     * Add products to category.
-     * 
-     * @param Collection $products
-     * @return void
-     */
-    public function attachProducts($products)
+    public function getChilds()
     {
-        $this->products = array();
-        foreach ($products->fetch() as $product) {
-            if (array_key_exists($this->id, $product->categories)) {
-                $this->products[$product->id] = $product;
-            }
-        }
+        return $this->categories;
     }
 }

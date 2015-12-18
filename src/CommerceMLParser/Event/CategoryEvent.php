@@ -10,26 +10,45 @@ namespace CommerceMLParser\Event;
 
 
 use CommerceMLParser\Event;
+use CommerceMLParser\Model\Category;
 use CommerceMLParser\Model\CategoryCollection;
+use CommerceMLParser\ORM\Collection;
 
 class CategoryEvent extends Event {
 
-    protected $category;
+    /** @var CategoryCollection|Category[]  */
+    protected $categories;
 
-    function __construct(CategoryCollection $category)
+    function __construct(CategoryCollection $categories)
     {
-        $this->category = $category;
+        $this->categories = $categories;
         call_user_func_array('parent::__construct', func_get_args());
     }
 
     /**
      * @return CategoryCollection
      */
-    public function getCategory()
+    public function getCategories()
     {
-        return $this->category;
+        return $this->categories;
     }
 
-
-
+    /**
+     * @return CategoryCollection|Category[]
+     */
+    public function getFlatCategories()
+    {
+        $collectionClass = get_class($this->categories);
+        /** @var Collection $collection */
+        $collection = new $collectionClass;
+        $recursiveIterator = function (CategoryCollection $categories) use ($collection, &$recursiveIterator) {
+            /** @var Category $category */
+            foreach ($categories as $category) {
+                $collection->add($category);
+                $recursiveIterator($category->getChilds());
+            }
+        };
+        $recursiveIterator($this->categories);
+        return $collection;
+    }
 }
