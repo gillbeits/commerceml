@@ -19,8 +19,10 @@ class Category extends Model implements IdModel, HasChild
     protected $name;
     /** @var string $parent */
     protected $parent;
-    /** @var CategoryCollection  */
+    /** @var CategoryCollection|Category[]  */
     protected $categories;
+    /** @var  PropertyCollection|Property[] */
+    protected $properties;
 
     /**
      * Create instance from file.
@@ -33,6 +35,12 @@ class Category extends Model implements IdModel, HasChild
         $this->id = (string) $xml->Ид;
         $this->name = (string) $xml->Наименование;
         $this->categories = new CategoryCollection();
+        $this->properties = new PropertyCollection();
+        if ($xml->Свойства) {
+            foreach ($xml->Свойства as $property) {
+                $this->properties->add(new Property($property));
+            }
+        }
     }
 
     /**
@@ -71,8 +79,20 @@ class Category extends Model implements IdModel, HasChild
         $this->categories->add($category);
     }
 
+    /**
+     * @return Category[]|CategoryCollection
+     */
     public function getChilds()
     {
         return $this->categories;
     }
+
+    /**
+     * @return Property[]|PropertyCollection
+     */
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
 }
