@@ -9,6 +9,7 @@
 namespace CommerceMLParser;
 
 
+use CommerceMLParser\Creational\Singleton;
 use CommerceMLParser\Exception\NoEventException;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -16,8 +17,11 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * Class Parser
  * @package CommerceMLParser
  *
+ * @method static Parser getInstance(Factory $factory = null)
  */
 class Parser extends EventDispatcher {
+    use Singleton;
+
     /** @var \XMLReader  */
     protected $xmlReader;
     /** @var Factory  */
@@ -37,67 +41,9 @@ class Parser extends EventDispatcher {
     private $bulk_rows_counter = [];
 
     /**
-     * @var static The stored singleton instance
+     * @param Factory|null $factory
      */
-    protected static $instance;
-
-    /**
-     * Creates the original or retrieves the stored singleton instance
-     * @param Factory $factory
-     * @return static
-     */
-    public static function getInstance(Factory $factory = null)
-    {
-        if (!static::$instance) {
-            static::$instance = (new \ReflectionClass(get_called_class()))
-                ->newInstanceWithoutConstructor();
-            call_user_func_array([static::$instance, "create"], func_get_args());
-        }
-
-        return static::$instance;
-    }
-
-    /**
-     * The constructor is disabled
-     *
-     * @throws \RuntimeException if called
-     */
-    public function __construct()
-    {
-        throw new \RuntimeException('You may not explicitly instantiate this object, because it is a singleton.');
-    }
-
-    /**
-     * Cloning is disabled
-     *
-     * @throws \RuntimeException if called
-     */
-    public function __clone()
-    {
-        throw new \RuntimeException('You may not clone this object, because it is a singleton.');
-    }
-
-    /**
-     * Unserialization is disabled
-     *
-     * @throws \RuntimeException if called
-     */
-    public function __wakeup()
-    {
-        throw new \RuntimeException('You may not unserialize this object, because it is a singleton.');
-    }
-
-    /**
-     * Unserialization is disabled
-     *
-     * @throws \RuntimeException if called
-     */
-    public function unserialize($serialized_data)
-    {
-        throw new \RuntimeException('You may not unserialize this object, because it is a singleton.');
-    }
-
-    protected function create(Factory $factory = null)
+    protected function __init(Factory $factory = null)
     {
         if (null == $factory) {
             $factory = new Factory();
