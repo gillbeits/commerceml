@@ -10,6 +10,8 @@ namespace CommerceMLParser;
 
 
 use CommerceMLParser\Creational\Singleton;
+use CommerceMLParser\Event\ProductEvent;
+use CommerceMLParser\Event\StartEvent;
 use CommerceMLParser\Exception\NoEventException;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -54,6 +56,17 @@ class Parser extends EventDispatcher {
         // Default parse rules
         foreach (Factory::$objects as $path => $object) {
             $this->registerPath($path, $this->dispatchObjectCallable());
+
+            $event = explode('\\', $object['event']);
+            $event = end($event);
+
+            $this->addListener($event, function (Event $e, $eventName, EventDispatcher $dispatcher) {
+                $_e = StartEvent::getInstance($name = $eventName . 'Start');
+                if (!$_e->isPropagationStopped()) {
+                    $dispatcher->dispatch($name, $_e);
+                    $_e->stopPropagation();
+                }
+            });
         }
     }
 

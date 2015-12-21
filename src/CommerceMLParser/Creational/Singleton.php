@@ -11,9 +11,7 @@ namespace CommerceMLParser\Creational;
 
 trait Singleton
 {
-    /**
-     * @var static The stored singleton instance
-     */
+    /** @var static The stored singleton instance */
     protected static $instance;
 
     /**
