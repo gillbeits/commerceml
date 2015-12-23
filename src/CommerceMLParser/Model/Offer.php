@@ -13,7 +13,7 @@ class Offer extends Product
     protected $quantity;
     /** @var Collection|Price[] Цены  */
     protected $prices;
-    /** @var Collection Склад */
+    /** @var Collection|WarehouseStock[] Склад */
     protected $warehouses;
 
     public function __construct(\SimpleXMLElement $xml)
@@ -45,7 +45,7 @@ class Offer extends Product
     }
 
     /**
-     * @return Types\Price[]|Collection
+     * @return Collection|Types\Price[]
      */
     public function getPrices()
     {
@@ -53,7 +53,7 @@ class Offer extends Product
     }
 
     /**
-     * @return Collection
+     * @return Collection|WarehouseStock[]
      */
     public function getWarehouses()
     {
