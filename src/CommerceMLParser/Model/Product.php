@@ -34,13 +34,13 @@ class Product extends Model implements IdModel
     protected $barcode;
     /** @var Collection|ProductCharacteristic[]  */
     protected $characteristics;
-    /** @var BaseUnit */
+    /** @var Collection|BaseUnit[] */
     protected $baseUnit;
     /** @var Collection|TaxRate[]  */
     protected $taxRate;
     /** @var Collection|string[]  */
     protected $images;
-    /** @var  Partner */
+    /** @var Collection|Partner[] */
     protected $manufacturer;
 
     /**
@@ -54,6 +54,9 @@ class Product extends Model implements IdModel
         $this->categories = new Collection();
         $this->requisites = new Collection();
         $this->properties = new Collection();
+        $this->manufacturer = new Collection();
+        $this->baseUnit = new Collection();
+
         $this->characteristics = new Collection();
         $this->images = new Collection();
         $this->taxRate = new Collection();
@@ -92,7 +95,9 @@ class Product extends Model implements IdModel
         }
 
         if ($xml->Изготовитель) {
-            $this->manufacturer = new Partner($xml->Изготовитель);
+            foreach ($xml->Изготовитель as $manufacture) {
+                $this->manufacturer->add(new Partner($manufacture));
+            }
         }
 
         if ($xml->ХарактеристикиТовара) {
@@ -102,7 +107,9 @@ class Product extends Model implements IdModel
         }
 
         if ($xml->БазоваяЕдиница) {
-            $this->baseUnit = new BaseUnit($xml->БазоваяЕдиница);
+            foreach ($xml->БазоваяЕдиница as $baseItem) {
+                $this->baseUnit->add(new BaseUnit($baseItem));
+            }
         }
 
         if ($xml->СтавкиНалогов) {

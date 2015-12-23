@@ -9,7 +9,7 @@
 namespace CommerceMLParser\Model\Types;
 
 
-use CommerceMLParser\Model\Types\AddressType;
+use phpDocumentor\Reflection\DocBlock\Type\Collection;
 
 class Address
 {
@@ -17,8 +17,8 @@ class Address
     protected $name;
     /** @var  string */
     protected $comment;
-    /** @var  Address */
-    protected $address;
+    /** @var  Collection|Address[] */
+    protected $addresses;
 
     /**
      * Address constructor.
@@ -29,9 +29,14 @@ class Address
     {
         if (null === $xml) return;
 
-        $this->comment = (string)$xml->Представление;
+        $this->addresses = new Collection();
+
+        $this->name = (string)$xml->Представление;
+        $this->comment = (string)$xml->Комментарий;
         if ($xml->АдресноеПоле) {
-            $this->address = new AddressType($xml->АдресноеПоле);
+            foreach ($xml->АдресноеПоле as $address) {
+                $this->addresses->add(new AddressType($address));
+            }
         }
     }
 
@@ -52,11 +57,11 @@ class Address
     }
 
     /**
-     * @return Address
+     * @return Collection|Address[]
      */
-    public function getAddress()
+    public function getAddresses()
     {
-        return $this->address;
+        return $this->addresses;
     }
 
     /**
