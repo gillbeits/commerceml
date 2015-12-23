@@ -20,6 +20,7 @@ class PriceType extends Model implements IdModel
      */
     public function __construct(\SimpleXMLElement $xml = null)
     {
+        parent::__construct($xml);
         if (!is_null($xml)) {
             $this->id = (string) $xml->Ид;
             $this->type = (string) $xml->Наименование;

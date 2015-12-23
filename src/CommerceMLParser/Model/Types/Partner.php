@@ -40,6 +40,7 @@ class Partner extends Model implements IdModel
 
     public function __construct(\SimpleXMLElement $xml)
     {
+        parent::__construct($xml);
         $this->id = (string)$xml->Ид;
         $this->name = (string)$xml->Наименование;
         $this->comment = (string)$xml->Комментарий;

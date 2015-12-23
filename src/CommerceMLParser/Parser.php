@@ -196,4 +196,12 @@ class Parser extends EventDispatcher {
         $this->bulk_count = $bulk_count;
         return $this;
     }
+
+    /**
+     * @return Factory
+     */
+    public function getFactory()
+    {
+        return $this->factory;
+    }
 }

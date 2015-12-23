@@ -31,7 +31,9 @@ class Category extends Model implements IdModel, HasChild
      */
     public function __construct(\SimpleXMLElement $xml = null)
     {
+        parent::__construct($xml);
         if (null === $xml) return;
+
         $this->id = (string) $xml->Ид;
         $this->name = (string) $xml->Наименование;
         $this->categories = new CategoryCollection();

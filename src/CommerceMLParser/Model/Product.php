@@ -49,6 +49,7 @@ class Product extends Model implements IdModel
      */
     public function __construct(\SimpleXMLElement $xml = null)
     {
+        parent::__construct($xml);
         if (null === $xml) return;
 
         $this->categories = new Collection();

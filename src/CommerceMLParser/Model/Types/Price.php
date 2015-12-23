@@ -28,6 +28,7 @@ class Price extends Model implements IdModel
      */
     public function __construct(\SimpleXMLElement $xml)
     {
+        parent::__construct($xml);
         $this->id = (string)$xml->ИдТипаЦены;
         $this->showing = (string)$xml->Представление;
         $this->price = (string)$xml->ЦенаЗаЕдиницу;

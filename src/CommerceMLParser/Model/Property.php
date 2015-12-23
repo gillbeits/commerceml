@@ -31,7 +31,9 @@ class Property extends Model implements IdModel
      */
     public function __construct(\SimpleXMLElement $xml = null)
     {
+        parent::__construct($xml);
         if (null === $xml) return;
+
         $this->id = (string)$xml->Ид;
         $this->name = (string)$xml->Наименование;
         $valueType = (string)$xml->ТипЗначений;
