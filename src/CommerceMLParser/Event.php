@@ -15,6 +15,7 @@ use Symfony\Component\EventDispatcher\Event as BaseClass;
  * @package CommerceMLParser
  */
 class Event extends BaseClass {
+    /** @var Parser  */
     protected $parser;
 
     function __construct()

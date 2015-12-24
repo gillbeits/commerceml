@@ -9,8 +9,10 @@
 namespace CommerceMLParser\Creational;
 
 
-trait Multiton {
-    use Singleton;
+trait Multiton
+{
+    /** @var static The stored multiton instances */
+    protected static $instance;
 
     /**
      * @param $name
@@ -34,4 +36,10 @@ trait Multiton {
 
         return static::$instance[$key];
     }
+
+    /**
+     * Init Multiton function
+     */
+    protected function __init () {}
+
 }
