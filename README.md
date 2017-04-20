@@ -1,5 +1,8 @@
 PHP CommerceML 2
 ==============
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/gillbeits/commerceml.svg?style=flat-square)](https://packagist.org/packages/gillbeits/commerceml)
+[![Build Status](https://img.shields.io/travis/gillbeits/commerceml.svg?style=flat-square)](https://travis-ci.org/gillbeits/commerceml)
+[![Total Downloads](https://img.shields.io/packagist/dt/gillbeits/commerceml.svg?style=flat-square)](https://packagist.org/packages/gillbeits/commerceml)
 
 ### О библиотеке
 Данная библиотека предназначена для поточного разбора выгруженных из 1с файлов по стандарту Commerce ML 2.
