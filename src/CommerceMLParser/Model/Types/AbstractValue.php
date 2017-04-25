@@ -15,9 +15,12 @@ abstract class AbstractValue
     protected $name;
     /** @var  string */
     protected $value;
+    /** @var \SimpleXMLElement  */
+    protected $_xml;
 
     public function __construct(\SimpleXMLElement $xml)
     {
+        $this->_xml = $xml;
         $this->name = (string)$xml->Наименование;
         $this->value = (string)$xml->Значение;
     }
@@ -36,5 +39,13 @@ abstract class AbstractValue
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @return \SimpleXMLElement
+     */
+    public function getXml()
+    {
+        return $this->_xml;
     }
 }
