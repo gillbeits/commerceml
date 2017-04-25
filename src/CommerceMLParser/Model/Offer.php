@@ -22,6 +22,7 @@ class Offer extends Product
 
         $this->prices = new Collection();
         $this->warehouses = new Collection();
+        $this->quantity = (float)$xml->Количество;
 
         if ($xml->Цены) {
             foreach ($xml->Цены->Цена as $price) {
