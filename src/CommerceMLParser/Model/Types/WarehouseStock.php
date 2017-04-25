@@ -30,8 +30,8 @@ class WarehouseStock extends Model implements IdModel
     public function __construct(\SimpleXMLElement $xml)
     {
         parent::__construct($xml);
-        $this->id = $xml->attributes()->ИдСклада;
-        $this->quantity = $xml->attributes()->КоличествоНаСкладе;
+        $this->id = (string)$xml->attributes()->ИдСклада;
+        $this->quantity = (string)$xml->attributes()->КоличествоНаСкладе;
     }
 
     /**
