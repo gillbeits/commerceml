@@ -66,7 +66,7 @@ class Product extends Model implements IdModel
         $this->name = (string)$xml->Наименование;
         $this->description = (string)$xml->Описание;
         $this->sku = (string)$xml->Артикул;
-        $this->barcode = (string)$xml->ШтрихКод;
+        $this->barcode = (string)$xml->Штрихкод;
 
         if ($xml->Группы) {
             foreach ($xml->Группы->Ид as $categoryId) {

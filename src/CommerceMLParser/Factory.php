@@ -39,6 +39,10 @@ class Factory {
             'model'         => '\CommerceMLParser\Model\PriceType',
             'event'         => '\CommerceMLParser\Event\PriceTypeEvent',
         ],
+        'КоммерческаяИнформация/ПакетПредложений/Склады/Склад' => [
+            'model'         => '\CommerceMLParser\Model\Warehouse',
+            'event'         => '\CommerceMLParser\Event\WarehouseEvent',
+        ],
         'КоммерческаяИнформация/ПакетПредложений/Предложения/Предложение' => [
             'model'         => '\CommerceMLParser\Model\Offer',
             'event'         => '\CommerceMLParser\Event\OfferEvent',
@@ -85,6 +89,9 @@ class Factory {
                 $strPrefix = "commerceml";
             }
             $xml->registerXPathNamespace($strPrefix, $strNamespace);
+        }
+        if(!$xml->getDocNamespaces()){
+            $xml->registerXPathNamespace("commerceml", "commerceml");
         }
         foreach ($xml->xpath(self::$objects[$path]['child']) as $childxml) {
             $child = new self::$objects[$path]['model']($childxml);
