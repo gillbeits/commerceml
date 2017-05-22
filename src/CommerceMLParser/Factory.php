@@ -20,6 +20,10 @@ class Factory {
      * @var array
      */
     public static $objects = [
+        'КоммерческаяИнформация/Классификатор/Владелец' => [
+            'model'         => '\CommerceMLParser\Model\Types\Partner',
+            'event'         => '\CommerceMLParser\Event\OwnerEvent',
+        ],
         'КоммерческаяИнформация/Классификатор/Группы/Группа' => [
             'model'         => '\CommerceMLParser\Model\Category',
             'event'         => '\CommerceMLParser\Event\CategoryEvent',
@@ -35,6 +39,10 @@ class Factory {
             'event'         => '\CommerceMLParser\Event\ProductEvent',
         ],
 
+        'КоммерческаяИнформация/ПакетПредложений/Владелец' => [
+            'model'         => '\CommerceMLParser\Model\Types\Partner',
+            'event'         => '\CommerceMLParser\Event\OwnerEvent',
+        ],
         'КоммерческаяИнформация/ПакетПредложений/ТипыЦен/ТипЦены' => [
             'model'         => '\CommerceMLParser\Model\PriceType',
             'event'         => '\CommerceMLParser\Event\PriceTypeEvent',

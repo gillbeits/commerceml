@@ -12,13 +12,14 @@ namespace CommerceMLParser\Model\Types;
 use CommerceMLParser\Model\Interfaces\IdModel;
 use CommerceMLParser\Model\Traits\PartnerProperty;
 use CommerceMLParser\Model\Types\Address;
+use CommerceMLParser\ORM\Collection;
 use CommerceMLParser\ORM\Model;
 
 /**
  * Class Partner
  * @package CommerceMLParser\Model
  *
- * @todo Дописать парсер Контактов и Агентов
+ * @todo Дописать парсер Агентов
  */
 class Partner extends Model implements IdModel
 {
@@ -32,8 +33,8 @@ class Partner extends Model implements IdModel
     protected $comment;
     /** @var  Address */
     protected $address;
-    /** @var array  */
-    protected $contacts = [];
+    /** @var Collection|Contact[]  */
+    protected $contacts;
     /** @var array  */
     protected $agents = [];
 
@@ -47,6 +48,13 @@ class Partner extends Model implements IdModel
         if ($xml->Адрес) {
             $this->address = new Address($xml->Адрес);
         }
+        $this->contacts = new Collection();
+        if ($xml->Контакты) {
+            foreach ($xml->Контакты->Контакт as $value) {
+                $this->contacts->add(new Contact($value));
+            }
+        }
+
     }
 
     /**
@@ -80,4 +88,13 @@ class Partner extends Model implements IdModel
     {
         return $this->address;
     }
+
+    /**
+     * @return Collection|Contact[]
+     */
+    public function getContacts()
+    {
+        return $this->contacts;
+    }
+
 }
