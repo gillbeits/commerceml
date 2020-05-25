@@ -54,7 +54,7 @@ class Parser extends EventDispatcher {
 
         $this->xmlReader = new \XMLReader();
         // Default parse rules
-        foreach (Factory::$objects as $path => $object) {
+        foreach ($factory->getObjects() as $path => $object) {
             $this->registerPath($path, $this->dispatchObjectCallable());
 
             $event = explode('\\', $object['event']);
@@ -63,7 +63,7 @@ class Parser extends EventDispatcher {
             $this->addListener($event, function (Event $e, $eventName, EventDispatcher $dispatcher) {
                 $_e = StartEvent::getInstance($name = $eventName . 'Start');
                 if (!$_e->isPropagationStopped()) {
-                    $dispatcher->dispatch($name, $_e);
+                    $dispatcher->dispatch($_e, $name);
                     $_e->stopPropagation();
                 }
             });
@@ -81,7 +81,7 @@ class Parser extends EventDispatcher {
             }
             $event = explode('\\', $object[1]['event']);
             $event = end($event);
-            $this->dispatch($event, new $object[1]['event']($object[0], $self));
+            $this->dispatch(new $object[1]['event']($object[0], $self), $event);
         };
     }
 
@@ -93,6 +93,11 @@ class Parser extends EventDispatcher {
         return $this->bulk_rows_counter[$event];
     }
 
+    /**
+     * @param $file
+     * @throws Exception\NoObjectException
+     * @throws Exception\NoPathException
+     */
     public function parse($file)
     {
         $this->currentFile = new \SplFileObject($file);
@@ -122,22 +127,25 @@ class Parser extends EventDispatcher {
         return $this;
     }
 
+    /**
+     * @throws Exception\NoObjectException
+     * @throws Exception\NoPathException
+     */
     protected function read()
     {
         $shop = null;
-        $xml = $this->xmlReader;
-        while ($xml->read()) {
-            if ($xml->nodeType == \XMLReader::END_ELEMENT) {
+        while ($this->xmlReader->read()) {
+            if ($this->xmlReader->nodeType == \XMLReader::END_ELEMENT) {
                 array_pop($this->path);
                 continue;
             }
 
 
-            if ($xml->nodeType == \XMLReader::ELEMENT) {
-                array_push($this->path, $xml->name);
+            if ($this->xmlReader->nodeType == \XMLReader::ELEMENT) {
+                array_push($this->path, $this->xmlReader->name);
                 $path = implode('/', $this->path);
 
-                if ($xml->isEmptyElement) {
+                if ($this->xmlReader->isEmptyElement) {
                     array_pop($this->path);
                 }
 
@@ -150,7 +158,7 @@ class Parser extends EventDispatcher {
 
         foreach ($this->bulk_rows as $event => $rows) {
             if (!empty($rows)) {
-                $this->dispatch('BulkUpload', new BulkEvent($event, $this));
+                $this->dispatch(new BulkEvent($event, $this), 'BulkUpload');
             }
         }
     }
@@ -160,7 +168,7 @@ class Parser extends EventDispatcher {
         $this->bulk_rows[$event][] = $obj;
         @$this->bulk_rows_counter[$event]++;
         if (count($this->bulk_rows[$event]) >= $this->bulk_count) {
-            $this->dispatch('BulkUpload', new BulkEvent($event, $this));
+            $this->dispatch(new BulkEvent($event, $this), 'BulkUpload');
             $this->bulk_rows[$event] = [];
         }
     }
@@ -190,6 +198,7 @@ class Parser extends EventDispatcher {
 
     /**
      * @param int $bulk_count
+     * @return Parser
      */
     public function setBulkCount($bulk_count)
     {

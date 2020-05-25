@@ -13,13 +13,13 @@ use CommerceMLParser\Exception\NoObjectException;
 use CommerceMLParser\Exception\NoPathException;
 use CommerceMLParser\Model\Interfaces\HasChild;
 use CommerceMLParser\ORM\Collection;
-use CommerceMLParser\ORM\Model;
+
 
 class Factory {
     /**
      * @var array
      */
-    public static $objects = [
+    protected static $objects = [
         'КоммерческаяИнформация/Классификатор/Владелец' => [
             'model'         => '\CommerceMLParser\Model\Types\Partner',
             'event'         => '\CommerceMLParser\Event\OwnerEvent',
@@ -58,6 +58,14 @@ class Factory {
     ];
 
     /**
+     * @return array
+     */
+    public function getObjects()
+    {
+        return static::$objects;
+    }
+
+    /**
      * @param string $path
      * @param \SimpleXMLElement $xml
      * @return array
@@ -66,22 +74,22 @@ class Factory {
      */
     public function createObject($path, $xml)
     {
-        if (empty(self::$objects[$path]['model'])) {
+        if (empty(static::$objects[$path]['model'])) {
             throw new NoPathException($path);
         }
-        if (!class_exists(self::$objects[$path]['model'])) {
-            throw new NoObjectException(self::$objects[$path]['model']);
+        if (!class_exists(static::$objects[$path]['model'])) {
+            throw new NoObjectException(static::$objects[$path]['model']);
         }
-        $object = new self::$objects[$path]['model']($xml);
+        $object = new static::$objects[$path]['model']($xml);
 
-        if (!empty(self::$objects[$path]['child']) && $object instanceof HasChild && !empty(self::$objects[$path]['collection']) && class_exists(self::$objects[$path]['collection'])) {
+        if (!empty(static::$objects[$path]['child']) && $object instanceof HasChild && !empty(static::$objects[$path]['collection']) && class_exists(static::$objects[$path]['collection'])) {
             /** @var Collection $collection */
-            $collection = new self::$objects[$path]['collection']();
+            $collection = new static::$objects[$path]['collection']();
             $collection->add($object);
             $this->addChild($object, $path, $xml);
         }
 
-        return [isset($collection) ? $collection : $object, self::$objects[$path]];
+        return [isset($collection) ? $collection : $object, static::$objects[$path]];
     }
 
     /**
@@ -101,8 +109,8 @@ class Factory {
         if(!$xml->getDocNamespaces()){
             $xml->registerXPathNamespace("commerceml", "commerceml");
         }
-        foreach ($xml->xpath(self::$objects[$path]['child']) as $childxml) {
-            $child = new self::$objects[$path]['model']($childxml);
+        foreach ($xml->xpath(static::$objects[$path]['child']) as $childxml) {
+            $child = new static::$objects[$path]['model']($childxml);
             $object->addChild($child);
             $this->addChild($child, $path, $childxml);
         }

@@ -19,9 +19,15 @@ PHP CommerceML 2
 ### Простое использование парсера:
 
 ```php
-$parser = new \CommerceMLParser\Parser(); // Создание экземпляра класса парсера
+$parser = \CommerceMLParser\Parser::getInstance(); // парсер
+// Парсер с кастомной фабрикой
+// $parser = \CommerceMLParser\Parser::getInstance(new CustomFactory());
+
+// Слушаем событие получения Категории
 $parser->addListener("CategoryEvent", function (\CommerceMLParser\Event\CategoryEvent $categoryEvent) {
     $categories = $categoryEvent->getCategory()->fetch(); // array of Category
 }); // добавление функции обработки события CategoryEvent
+
+// Парсим файл XML
 $parser->parse($pathToImportXmlFile); // полный путь до файла import.xml (Commerce ML 2) выгрузки из 1с
 ```

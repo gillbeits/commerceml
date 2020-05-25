@@ -11,7 +11,9 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
+        "ext-simplexml": "*",
+        "ext-xmlreader": "*",
+        "php": ">=5.6",
         "symfony/event-dispatcher": ">=2.1"
     },
     "minimum-stability": "dev",
@@ -21,7 +23,9 @@
         }
     },
     "require-dev": {
-        "codeception/codeception": "dev-master"
+        "codeception/codeception": "4.1",
+        "codeception/module-asserts": "dev-master",
+        "symfony/var-dumper": "^5.2@dev"
     },
     "extra": {
         "branch-alias": {
