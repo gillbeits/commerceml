@@ -24,8 +24,7 @@
     },
     "require-dev": {
         "codeception/codeception": "4.1",
-        "codeception/module-asserts": "dev-master",
-        "symfony/var-dumper": "^5.2@dev"
+        "codeception/module-asserts": "dev-master"
     },
     "extra": {
         "branch-alias": {
