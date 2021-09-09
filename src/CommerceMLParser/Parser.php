@@ -49,9 +49,9 @@ class Parser extends EventDispatcher {
     {
         if (null == $factory) {
             $factory = new Factory();
-            $this->factory = $factory;
         }
-
+        
+        $this->factory = $factory;
         $this->xmlReader = new \XMLReader();
         // Default parse rules
         foreach ($factory->getObjects() as $path => $object) {
